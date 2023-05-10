@@ -1,0 +1,44 @@
+
+JMP start
+inicio: DB 10
+fin: DB 20
+fin_pila: DB 231
+ascii: DB 48
+
+start:
+	MOV A, [inicio] ; A es mi suma total
+	MOV C, [inicio] ; C es mi siguiente numero a sumar
+ 	MOV B, [inicio]; B es mi contador de iteraciones
+	MOV D, 232; D apunta al inicio del output 
+
+.loop:
+	INC C
+	ADD A, C
+
+	INC B
+
+	CMP B, [fin]
+	JB .loop
+
+.splitting_digits:
+	MOV B, A; B tiene una copia de A 40
+	DIV 10;	A = 4
+	MUL 10; A = 40
+	SUB B, A; B - A = 40 - 40 = 0
+	DIV 10; A = 4
+	
+	ADD B, [ascii]
+	
+	PUSH B; Guardaos la unidad en la pila
+	CMP A, 0;
+	JA .splitting_digits
+
+.print:
+	POP B;
+	MOV [D], B;
+	INC D
+	CMP SP, 231
+	JNE .print
+
+.end:
+	HLT
